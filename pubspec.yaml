@@ -50,6 +50,7 @@ dependencies:
   flutter_slidable:
   flutter_link_previewer: ^4.2.0
   flutter_chat_core: ^2.9.0
+  flutter_callkit_incoming: ^3.0.0
 
 dev_dependencies:
   flutter_test:
