@@ -75,6 +75,8 @@ void main() async {
     ],
     debug: true,
   );
+  await AwesomeNotifications().requestPermissionToSendNotifications();
+
 
   // This is the ONLY listener you should set.
   AwesomeNotifications().setListeners(
@@ -82,6 +84,16 @@ void main() async {
   );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("Got a message whilst in the foreground!");
+    print("Message data: ${message.data}");
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+      _firebaseMessagingBackgroundHandler(message);
+    }
+  });
 
   runApp(const NewVoiceCallApp());
 }
