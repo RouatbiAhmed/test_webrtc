@@ -1,56 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
-// IMPORTANT: Make sure the path to your old model is correct
-import '../main.dart' as app_main;
 import '../models/location.dart';
 import '../models/user.dart';
 import 'call_screen.dart';
 
-// Copy the User object definitions from your old main.dart
-// We will update the tokens dynamically.
-User yashMakanTemplate = User(
-    name: "Yash Makan",
-    email: "yashmakan.fake.email@gmail.com",
+User User1Template = User(
+    name: "User 1",
+    email: "User1@gmail.com",
     gender: "Male",
     phoneNumber: "9999999999",
     birthDate: 498456350,
-    location: Location(
-        city: "Rohtak",
-        postcode: "124001",
-        state: "Haryana",
-        street: "New Street"),
-    username: "yashmakan",
-    password: "79aa7b81bcdd14fd98282b810b61312b",
-    firstName: "Yash",
-    lastName: "Makan",
+    location: Location(city: "XXX", postcode: "124001", state: "xxxxx", street: "New Street"),
+    username: "User 1",
+    password: "password123",
+    firstName: "User 1",
+    lastName: "User 1",
     title: "Full Stack Developer",
-    //firebaseToken: "e1E1sZR4T-ysib46L2idFq:APA91bFRtT1a2Q_HqIWMwN7iKX6TIt4nBHIum3sQPTl3lTYWYx0nSh1khX8Tg0ntOzTWlnZgsh_PowXEKl58MF_9tO2Sn5QFZ_6yRkdiU-B54EgwP680vozB4zfeIEi_vxI4IzOGWKcd",
-    firebaseToken: "dGRg2SRNQlmQ_FzSdhxoYy:APA91bE9RK7HYZrUzmoMN8FMgILAVOeZ-zje2Jk6MdnroafCbcUsFwPeBmrH6bdPPLOqSLB1N2SDJeH4rQ32BTMLSZCi3jnScJsuDhMZ0PkHddZn_cMBCAo",
     uuid: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-    picture:
-    "https://images.unsplash.com/photo-1453396450673-3fe83d2db2c4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80");
+    picture: "https://images.unsplash.com/photo-1453396450673-3fe83d2db2c4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
+    firebaseToken: "dGRg2SRNQlmQ_FzSdhxoYy:APA91bE9RK7HYZrUzmoMN8FMgILAVOeZ-zje2Jk6MdnroafCbcUsFwPeBmrH6bdPPLOqSLB1N2SDJeH4rQ32BTMLSZCi3jnScJsuDhMZ0PkHddZn_cMBCAo"
+);
 
-User rickRollandTemplate = User(
-    name: "Rick Rolland",
-    email: "rick.fake.email@gmail.com",
+User User2Template = User(
+    name: "User 2",
+    email: "user2@gmail.com",
     gender: "Male",
     phoneNumber: "8888888888",
     birthDate: 498456351,
-    location: Location(
-        city: "Rohtak",
-        postcode: "124001",
-        state: "Haryana",
-        street: "New Street"),
-    username: "rickkk",
-    password: "79aa7b81bcdd14fd98282b810b61312a",
-    firstName: "Rick",
-    lastName: "Rolland",
+    location: Location(city: "xxxxx", postcode: "124001", state: "xxxx", street: "New Street"),
+    username: "User 2",
+    password: "password456",
+    firstName: "User 2",
+    lastName: "User 2",
     title: "Web Developer",
-    firebaseToken: "e4MDJyqDTcGmAv4B59qlNi:APA91bE8u8J1XRFtWR7wWRi3A8U5B19ifw2iCxbcKpa00nMbo4zv_f0Pm9HVlRsRp4-Tj7p4gycqRJOFvrHpWhqhuRchyjWPhbrVm5qUdzoa8GoGo9Snh2o",
     uuid: "b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a",
-    picture:
-    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2");
+    picture: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    firebaseToken: "e4MDJyqDTcGmAv4B59qlNi:APA91bE8u8J1XRFtWR7wWRi3A8U5B19ifw2iCxbcKpa00nMbo4zv_f0Pm9HVlRsRp4-Tj7p4gycqRJOFvrHpWhqhuRchyjWPhbrVm5qUdzoa8GoGo9Snh2o"
+);
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -67,50 +54,50 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _loginAs(User userTemplate) async {
     setState(() { _isLoading = true; });
 
-    // Fetch the real FCM token for this device
+    // 1. Fetch the real FCM token for this device
     String? token = await FirebaseMessaging.instance.getToken();
     if (token == null) {
       print("Error: Could not get FCM token.");
       setState(() { _isLoading = false; });
       return;
     }
-    print("Logged in as ${userTemplate.name} with token: $token");
+    print("Logged in as ${userTemplate.name} with fresh token: $token");
 
-    // Create a new user object with the real token
-    _currentUser = User(
-      name: userTemplate.name,
-      uuid: userTemplate.uuid,
-      picture: userTemplate.picture,
-      firebaseToken: token,
-      // copy other necessary fields...
-      email: userTemplate.email,
-      gender: userTemplate.gender,
-      phoneNumber: userTemplate.phoneNumber,
-      birthDate: userTemplate.birthDate,
-      location: userTemplate.location,
-      username: userTemplate.username,
-      password: userTemplate.password,
-      firstName: userTemplate.firstName,
-      lastName: userTemplate.lastName,
-      title: userTemplate.title,
-    );
+    // 2. Create a User object for the current session
+    _currentUser = User.fromUser(userTemplate, newFirebaseToken: token);
 
-    // Determine who the friend is
-    _friend = (_currentUser!.uuid == yashMakanTemplate.uuid)
-        ? app_main.rickRollandTemplate
-        : app_main.yashMakanTemplate;
+    // 3. Update the user's data in Firestore, including the new token
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_currentUser!.uuid)
+          .set(_currentUser!.toMap(), SetOptions(merge: true)); // Use merge to avoid overwriting all data
+    } catch (e) {
+      print("Error updating user in Firestore: $e");
+      setState(() { _isLoading = false; });
+      return;
+    }
+
+
+    // 4. Determine who the friend is based on UUID
+    _friend = (_currentUser!.uuid == User1Template.uuid)
+        ? User2Template
+        : User1Template;
     setState(() { _isLoading = false; });
   }
 
-  void _startCall() {
+
+  void _startCall() async {
     if (_currentUser == null || _friend == null) return;
 
+    // We no longer need to pass the friend object, just their ID.
+    // The WebRTCManager will fetch the friend's latest data from Firestore.
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CallScreen(
           currentUser: _currentUser!,
-          friend: _friend!,
+          friendId: _friend!.uuid, // Pass friend's ID
           isCaller: true, // This user is initiating the call
         ),
       ),
@@ -128,9 +115,9 @@ class _MainScreenState extends State<MainScreen> {
             ? Column( // Login View
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: () => _loginAs(yashMakanTemplate), child: Text("Login as Yash")),
+            ElevatedButton(onPressed: () => _loginAs(User1Template), child: Text("Login as User 1")),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: () => _loginAs(rickRollandTemplate), child: Text("Login as Rick")),
+            ElevatedButton(onPressed: () => _loginAs(User2Template), child: Text("Login as Usr 2")),
           ],
         )
             : Column( // Main View

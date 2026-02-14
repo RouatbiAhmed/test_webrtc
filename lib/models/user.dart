@@ -48,6 +48,7 @@ class User {
         required this.firebaseToken,
         required this.picture});
 
+
   User copyWith({
     String? name,
     String? email,
@@ -99,6 +100,41 @@ class User {
     uuid: json[uuidKey]??"",
     picture: json[pictureKey],
   );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'gender': gender,
+      'phoneNumber': phoneNumber,
+      'birthDate': birthDate,
+      'location': location.toMap(), // Assuming Location has a toMap method too
+      'username': username,
+      'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
+      'title': title,
+      'firebaseToken': firebaseToken,
+      'uuid': uuid,
+      'picture': picture,
+    };
+  }
+
+  User.fromUser(User user, {String? newFirebaseToken})
+      : name = user.name,
+        email = user.email,
+        gender = user.gender,
+        phoneNumber = user.phoneNumber,
+        birthDate = user.birthDate,
+        location = user.location,
+        username = user.username,
+        password = user.password,
+        firstName = user.firstName,
+        lastName = user.lastName,
+        title = user.title,
+        firebaseToken = newFirebaseToken ?? user.firebaseToken,
+        uuid = user.uuid,
+        picture = user.picture;
 
   toJson() => {
     nameKey: name,

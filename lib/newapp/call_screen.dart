@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'webrtc_manager.dart';
@@ -6,14 +7,14 @@ import '../api/api.dart';
 
 class CallScreen extends StatefulWidget {
   final User currentUser;
-  final User friend;
+  final String friendId;
   final bool isCaller;
   final String? callId;
 
   const CallScreen({
     super.key,
     required this.currentUser,
-    required this.friend,
+    required this.friendId,
     required this.isCaller,
     this.callId,
   });
@@ -29,6 +30,20 @@ class _CallScreenState extends State<CallScreen> {
   String _status = 'Initializing';
   RTCPeerConnectionState _state =
       RTCPeerConnectionState.RTCPeerConnectionStateNew;
+
+  Widget _buildAppBarTitle() {
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('users').doc(widget.friendId).get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+          final friendName = snapshot.data?['name'] ?? 'Friend';
+          return Text('Call with $friendName');
+        }
+        return const Text('Calling...');
+      },
+    );
+  }
+
 
   Widget _buildConnectionIcon() {
     IconData icon;
@@ -83,13 +98,10 @@ class _CallScreenState extends State<CallScreen> {
     await _manager.initMedia();
 
     if (widget.isCaller) {
-      final id = await _manager.createCall();
+      // Pass currentUser and friendId to the manager
+      final id = await _manager.createCall(widget.currentUser, widget.friendId);
       setState(() => _status = 'Ringing...');
-      Api.sendNotificationRequestToFriendToAcceptCall(
-        id,
-        widget.currentUser,
-        widget.friend,
-      );
+      // The WebRTCManager is now responsible for sending the notification, so the API call is removed from here.
     } else {
       await _manager.joinCall(widget.callId!);
       setState(() => _status = 'Connecting...');
@@ -107,7 +119,7 @@ class _CallScreenState extends State<CallScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Call with ${widget.friend.name}'),
+          title: _buildAppBarTitle(),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),

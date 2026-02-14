@@ -21,6 +21,15 @@ class Location {
       state: json[stateKey],
       postcode: json[postcodeKey].toString());
 
+  Map<String, dynamic> toMap() {
+    return {
+      'city': city,
+      'postcode': postcode,
+      'state': state,
+      'street': street,
+    };
+  }
+
   toJson() => {
         streetKey: street,
         cityKey: city,

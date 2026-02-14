@@ -2,26 +2,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
-
 class Api {
-  // Make sure this IP is correct for your local network
   static const String apiUrl = "http://192.168.1.20:8080";
 
-  // CORRECTED: The function now clearly distinguishes between the caller and the friend.
-  static Future<void> sendNotificationRequestToFriendToAcceptCall(
-      String roomId, User caller, User friendToCall) async {
+  // MODIFIED: Function now accepts friend's token and name directly.
+  static Future<void> sendNotificationRequestToFriendToAcceptCall({
+    required String roomId,
+    required User caller,
+    required String friendToken,
+    required String friendName,
+  }) async {
+    print("[API] Preparing notification. Caller: ${caller.name}, Friend: $friendName");
+    print("[API] Sending to friend's token: $friendToken");
 
-    print("[API] Preparing notification. Caller: ${caller.name}, Friend: ${friendToCall.name}");
-    print("[API] Sending to friend's token: ${friendToCall.firebaseToken}");
-
-    // This data structure now matches your working Postman request.
     var data = jsonEncode({
       // **Where to send:** Use the FRIEND'S token.
-      "fcm_token": friendToCall.firebaseToken,
+      "fcm_token": friendToken,
 
       // **What to send (the payload):** Use the CALLER'S info.
       "caller_name": caller.name,
-      "uuid": caller.uuid, // This is critical for the receiver to know who is calling.
+      "uuid": caller.uuid,
       "caller_id": caller.phoneNumber,
       "caller_id_type": "number",
       "has_video": "false",
