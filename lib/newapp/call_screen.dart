@@ -135,7 +135,11 @@ class _CallScreenState extends State<CallScreen> {
           const SizedBox(height: 30),
 
           // AUDIO WILL NOT PLAY WITHOUT THIS
-          RTCVideoView(_audioRenderer),
+          SizedBox(
+            height: 0,
+            width: 0,
+            child: RTCVideoView(_audioRenderer),
+          ),
 
           const SizedBox(height: 30),
           FloatingActionButton(
