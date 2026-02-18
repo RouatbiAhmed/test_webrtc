@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.11.1" type="baseline" client="gradle" dependencies="false" name="AGP (8.11.1)" variant="all" version="8.11.1">
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of Gradle than 8.14 is available: 8.14.4"
+        errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.14-all.zip"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="$HOME/StudioProjects/test_webrtc/android/gradle/wrapper/gradle-wrapper.properties"
+            line="5"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-bom than 34.8.0 is available: 34.9.0"
+        errorLine1="    implementation(platform(&quot;com.google.firebase:firebase-bom:34.8.0&quot;))"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="64"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v21`) is unnecessary; `minSdkVersion` is 23. Merge all the resources in this folder into `drawable`.">
+        <location
+            file="src/main/res/drawable-v21"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.NormalTheme` appears to be unused"
+        errorLine1="    &lt;style name=&quot;NormalTheme&quot; parent=&quot;@android:style/Theme.Light.NoTitleBar&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="15"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnnecessaryRequiredFeature"
+        message="Consider whether this feature (`android.hardware.camera.autofocus`) really is required for the app to function; you can set `android:required=&quot;false&quot;` to indicate that the feature is used but not required"
+        errorLine1="    &lt;uses-feature android:name=&quot;android.hardware.camera.autofocus&quot; />"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="4"
+            column="33"/>
+    </issue>
+
+</issues>
