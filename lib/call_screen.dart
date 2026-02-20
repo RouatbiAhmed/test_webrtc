@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'webrtc_manager.dart';
+import '../services/webrtc_manager.dart';
 import '../models/user.dart';
-import '../api/api.dart';
 
 class CallScreen extends StatefulWidget {
   final User currentUser;
@@ -99,7 +98,7 @@ class _CallScreenState extends State<CallScreen> {
 
     if (widget.isCaller) {
       // Pass currentUser and friendId to the manager
-      final id = await _manager.createCall(widget.currentUser, widget.friendId);
+      //final id = await _manager.createCall(widget.currentUser, widget.friendId);
       setState(() => _status = 'Ringing...');
       // The WebRTCManager is now responsible for sending the notification, so the API call is removed from here.
     } else {

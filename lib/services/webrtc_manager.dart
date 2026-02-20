@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-import '../api/api.dart';
 import '../models/user.dart';
+import 'api.dart';
 
 class WebRTCManager {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -39,7 +39,7 @@ class WebRTCManager {
 
   // MODIFIED: Accepts currentUser and friendId
   Future<String> createCall(User currentUser, String friendId) async {
-    // 1. Fetch the friend's latest data from Firestore
+    // Fetch the friend's latest data from Firestore
     final friendDoc = await _firestore.collection('users').doc(friendId).get();
     if (!friendDoc.exists || friendDoc.data() == null) {
       throw Exception("Friend with ID $friendId not found in Firestore.");
@@ -72,7 +72,7 @@ class WebRTCManager {
     await _pc!.setLocalDescription(offer);
     await room.set({'offer': offer.toMap()});
 
-    // 2. Send the notification using the FRESH token from Firestore
+    // Send the notification using the FRESH token from Firestore
     // Note: Your Api.sendNotificationRequestToFriendToAcceptCall might need adjustment
     // if it expects a full User object for the friend. Let's assume it can take a token and name.
     Api.sendNotificationRequestToFriendToAcceptCall(
